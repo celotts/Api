@@ -1,0 +1,32 @@
+{
+	"name": "api",
+	"version": "1.0.0",
+	"description": "Servicio api",
+	"main": "server",
+	"scripts": {
+		"start": "nodemon server.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/celotts/horarioAndClima.git"
+	},
+	"author": "Carlos Lott",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/celotts/horarioAndClima/issues"
+	},
+	"homepage": "https://github.com/celotts/horarioAndClima#readme",
+	"dependencies": {
+		"axios": "^0.19.0",
+		"body-parser": "^1.19.0",
+		"cors": "^2.8.5",
+		"express": "^4.17.1",
+		"forecastio": "^2.0.0",
+		"redis": "^2.8.0",
+		"socket.io": "^2.3.0"
+	},
+	"devDependencies": {
+		"nodemon": "^1.19.3"
+	}
+}

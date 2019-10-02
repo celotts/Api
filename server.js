@@ -5,6 +5,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const errorMiddleware = require('./middleware/errors')
 
+const socketIo = require("socket.io");
+const axios = require("axios");
+
 const hostname = 'localhost';
 const porDb = '4200';
 
@@ -41,3 +44,4 @@ client.on('connect',() => {
 client.on('error',(error) => {
     console.log(`Error Redis:`)
 })
+

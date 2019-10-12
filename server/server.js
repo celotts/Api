@@ -1,10 +1,17 @@
 const express = require('express');
 const app = express();
-const api = require('./routes/ciudad.router');
+
+app.get('/ciudad', function (req, res) {
+    res.json('Hola clott')
+})
+
+
+/* const api = require('./routes/ciudad.router');
+ */
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const errorMiddleware = require('./middleware/errors')
-
+/* const errorMiddleware = require('./middleware/errors')
+ */
 const socketIo = require("socket.io");
 const axios = require("axios");
 
@@ -31,17 +38,6 @@ app.use(cors(
     }
 ));
 
-app.use(api);
-
 app.listen(3000, () => {
-    console.log(`Server iniciado en el puerto`);
-});
-
-client.on('connect', () => {
-    console.log(`Conectado Redis en el puerto`)
+    console.log('Servidor escuchando en el puerto 3000');
 })
-
-client.on('error', (error) => {
-    console.log(`Error Redis:`)
-})
-

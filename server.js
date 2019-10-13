@@ -4,6 +4,7 @@ const api = require('./routes/ciudad.router');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const errorMiddleware = require('./middleware/errors')
+const port = process.env.PORT || 1972;
 
 const socketIo = require("socket.io");
 const axios = require("axios");
@@ -33,15 +34,15 @@ app.use(cors(
 
 app.use(api);
 
-app.listen(3000, () => {
-    console.log(`Server iniciado en el puerto`);
+app.listen(port, () => {
+    console.log(`Server iniciado en el puerto ${port}`);
 });
 
 client.on('connect', () => {
-    console.log(`Conectado Redis en el puerto`)
+    console.log(`Conectado Redis en el puerto 6379`)
 })
 
 client.on('error', (error) => {
-    console.log(`Error Redis:`)
+    console.log(`Error Redis`)
 })
 

@@ -48,7 +48,7 @@ let seachTemperatura = async (objetoCiudad) => {
         latitud: objetoCiudad.latitud,
         longitud: objetoCiudad.longitud,
         hora: await converTime(moment(dataClima.data.currently.time * 1000)),
-        temperatura: dataClima.data.currently.temperature
+        temperatura: ((dataClima.data.currently.temperature - 32) * 5 / 9)
     }
 }
 

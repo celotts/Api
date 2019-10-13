@@ -1,39 +1,36 @@
-const request = require('request');
 const redis = require('async-redis');
-const Ciudad = require('../model/ciudad')
+const ServiceRedis = require('../ServiceRedis/serviceRedis')
+const moment = require('moment');
 const axios = require('axios');
-const API_KEY = '39860039f1eeda6dd272f43d61ae467d';// 'a5e036bc49458c5f7bb593e87668f9a8';
+const API_KEY = /* '39860039f1eeda6dd272f43d61ae467d'; */ 'a5e036bc49458c5f7bb593e87668f9a8';
 
-let redisCiudades = redis.createClient(6379);
+const API_REDIS = "keyCiydades";
 
-const checkIfRequestFailed = () => {
+let redisCiudades = redis.createClient();
+
+let serviceRedis = new ServiceRedis(redisCiudades);
+
+const chequeaRespuestaFallida = () => {
+
     if (Math.random() < 0.1) {
-        throw new Error('How unfortunate! The API Request Failed')
+        throw new Error('Ha ocurrido una falla! El servidor no responde')
     }
 }
 
 dataCiudad = async (req, res, next) => {
-    pushCiudades();
-    let ciudadesRes = await Ciudades();
-    let ciudadesClima = await ciudadClima(JSON.parse(ciudadesRes))
-    return res.json(ciudadesClima);
-}
+    while (true) {
+        try {
+            chequeaRespuestaFallida();
+            serviceRedis.setRedisCiudades(API_REDIS);
+            let ciudadesRes = await serviceRedis.getRedisCiudades(API_REDIS);
+            let ciudadesClima = await ciudadClima(JSON.parse(ciudadesRes))
+            return res.json(ciudadesClima);
+        }
+        catch (error) {
+            let res = await serviceRedis.setRedisError('api.errors', moment().unix(), error.message);
+        }
+    }
 
-let pushCiudades = async () => {
-    let ciudad = []
-    ciudad.push(new Ciudad('CL', 'Santiago', -70.6482700, -33.4569400));
-    ciudad.push(new Ciudad('CH', 'Zurich', 8.5500000, 47.3666700));
-    /*ciudad.push(new Ciudad('NZ', 'Auckland', 174.7833300, -36.8500000));
-    ciudad.push(new Ciudad('AU', 'Sydney', 141.7022200, -13.4183300));
-    ciudad.push(new Ciudad('UK', 'Londres', -0.118092, 51.509865));
-    ciudad.push(new Ciudad('USA', 'Georgia', -83.5001800, 32.7504200)); */
-    let ciudadesJSON = await redisCiudades.set('keyCiudades', JSON.stringify(ciudad));
-    return ciudadesJSON;
-}
-
-let Ciudades = async (req, res) => {
-    let ciudadesRedis = await redisCiudades.get("keyCiudades");
-    return ciudadesRedis;
 }
 
 let ciudadClima = async (ciudades) => {
@@ -50,22 +47,21 @@ let seachTemperatura = async (objetoCiudad) => {
         ciudad: `(${objetoCiudad.codigoCiudad}) - ${objetoCiudad.nombreCiudad} `,
         latitud: objetoCiudad.latitud,
         longitud: objetoCiudad.longitud,
-        hora: await converTime(dataClima.data.currently.time),
+        hora: await converTime(moment(dataClima.data.currently.time * 1000)),
         temperatura: dataClima.data.currently.temperature
     }
-
 }
 
 let converTime = (horaOriginal) => {
     let hora = new Date(horaOriginal).getHours();
     let minutos = new Date(horaOriginal).getMinutes();
+    let segundos = new Date(horaOriginal).getSeconds();
     hora = (hora < 10) ? '0' + hora : hora;
     minutos = (minutos < 10) ? '0' + minutos : minutos;
-
-    let horaFormateada = (hora + ':' + minutos);
+    segundos = (segundos < 10) ? '0' + segundos : segundos;
+    let horaFormateada = (hora + ':' + minutos + ':' + segundos);
     return horaFormateada;
 }
-
 module.exports = {
     dataCiudad
 }

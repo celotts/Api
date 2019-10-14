@@ -1,11 +1,16 @@
 const express = require('express');
+const socketIo = require("socket.io");
+const http = require('http');
+
 const app = express();
+let server = http.createServer(app);
+
 const api = require('./routes/ciudad.router');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const errorMiddleware = require('./middleware/errors')
+const port = process.env.PORT || 1972;
 
-const socketIo = require("socket.io");
 const axios = require("axios");
 
 const hostname = 'localhost';
@@ -33,15 +38,20 @@ app.use(cors(
 
 app.use(api);
 
-app.listen(3000,() => {
-    console.log(`Server iniciado en el puerto`);
+let io = socketIo(server);
+
+module.exports = socketIo(server);
+require('../Api/sockets/socket');
+
+server.listen(port, () => {
+    console.log(`Server iniciado en el puerto ${port}`);
 });
 
-client.on('connect',() => {
-    console.log(`Conectado Redis en el puerto`)
+client.on('connect', () => {
+    console.log(`Conectado Redis en el puerto 6379`)
 })
 
-client.on('error',(error) => {
-    console.log(`Error Redis:`)
+client.on('error', (error) => {
+    console.log(`Error Redis`)
 })
 

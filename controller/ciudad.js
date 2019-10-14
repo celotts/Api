@@ -2,7 +2,7 @@ const redis = require('async-redis');
 const ServiceRedis = require('../ServiceRedis/serviceRedis')
 const moment = require('moment');
 const axios = require('axios');
-const API_KEY = '39860039f1eeda6dd272f43d61ae467d'; /* 'a5e036bc49458c5f7bb593e87668f9a8';*/
+const API_KEY = '2c89c8067a89d2af34962586aa4b44bf';/* '39860039f1eeda6dd272f43d61ae467d'; */ /* 'a5e036bc49458c5f7bb593e87668f9a8';*/
 
 const API_REDIS = "keyCiydades";
 
@@ -21,12 +21,14 @@ dataCiudad = async (req, res, next) => {
     while (true) {
         try {
             //       chequeaRespuestaFallida();
-            serviceRedis.setRedisCiudades(API_REDIS);
-            let ciudadesRes = await serviceRedis.getRedisCiudades(API_REDIS);
-            let ciudadesClima = await ciudadClima(JSON.parse(ciudadesRes))
+            //serviceRedis.setRedisCiudades(API_REDIS);
+            //let ciudadesRes = await serviceRedis.getRedisCiudades(API_REDIS);
+            //let ciudadesClima = await ciudadClima(JSON.parse(ciudadesRes))
+            let ciudadesClima = { a: '123' }
             return res.json(ciudadesClima);
         }
         catch (error) {
+            console.log("object");
             let res = await serviceRedis.setRedisError('api.errors', moment().unix(), error.message);
         }
     }

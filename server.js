@@ -1,12 +1,16 @@
 const express = require('express');
+const socketIo = require("socket.io");
+const http = require('http');
+
 const app = express();
+let server = http.createServer(app);
+
 const api = require('./routes/ciudad.router');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const errorMiddleware = require('./middleware/errors')
 const port = process.env.PORT || 1972;
 
-const socketIo = require("socket.io");
 const axios = require("axios");
 
 const hostname = 'localhost';
@@ -34,7 +38,12 @@ app.use(cors(
 
 app.use(api);
 
-app.listen(port, () => {
+let io = socketIo(server);
+
+module.exports = socketIo(server);
+require('../Api/sockets/socket');
+
+server.listen(port, () => {
     console.log(`Server iniciado en el puerto ${port}`);
 });
 

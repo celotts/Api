@@ -24,7 +24,7 @@ class ServiceRedis {
     }
 
     async setRedisError(keyValue, hora, mensaje) {
-        await this.redisCiudades.get(keyValue, [hora, mensaje])
+        //   await this.redisCiudades.get(keyValue, [hora, mensaje])
     }
 }
 
